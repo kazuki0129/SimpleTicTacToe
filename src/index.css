@@ -53,16 +53,33 @@ ol, ul {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    margin: 40px auto;
+}
+
+.status-info{
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 15px;
 }
 
 .game-info {
     margin-left: 20px;
 }
-.status-info{
+
+.status-title{
     text-align: center;
-    font-size: 18px;
+    font-size: 15px;
+    border-bottom: 1px solid #a5e5ff;
 }
 
 .game-history{
     margin-top: 10px;
+}
+
+.btn-style{
+    padding: 5px 10px;
+    font-size: 12px;
+    background-color: transparent;
+    border: 1px solid #a9cfff;
+    margin-left: 10px;
 }

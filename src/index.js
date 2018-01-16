@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import './index.css';
 
+
 // Class Square consists only render() then we can use functional components like below.
 function Square(props){
     return (
@@ -17,7 +18,7 @@ class Board extends React.Component {
     renderSquare(i) {
         return (
             <Square
-                value={ this.props.squares[i]}
+                value={ this.props.squares[i] }
                 onClick={ () => this.props.onClick(i)}
             />
         );
@@ -52,7 +53,8 @@ class Game extends React.Component {
         super(props);
         this.state = {
             history : [{
-                squares: Array(9).fill(null)
+                squares: Array(9).fill(null),
+                selectedPos: null
             }],
             stepNumber: 0,
             xIsNext: true
@@ -63,6 +65,7 @@ class Game extends React.Component {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
+
         if (calculateWinner(squares) || squares[i]) {
             return;
         }
@@ -70,9 +73,10 @@ class Game extends React.Component {
         this.setState({
             history: history.concat([{
                 squares: squares,
+                selectedPos: i
             }]),
             stepNumber: history.length,
-            xIsNext : !this.state.xIsNext,
+            xIsNext: !this.state.xIsNext,
         });
     }
 
@@ -82,6 +86,46 @@ class Game extends React.Component {
             xIsNext: (step % 2) === 0,
         })
     }
+
+    // checkLocation() {
+    //     const locations = this.state.selectedLoc;
+    //     let loc = [];
+    //
+    //     console.log(loc);
+    //     switch (locations){
+    //
+    //         case 0:
+    //             loc.push(' (col: 1, row: 1)');
+    //             return loc;
+    //         case 1:
+    //             loc.push(' (col: 2, row: 1)');
+    //             return loc;
+    //         case 2:
+    //             loc.push(' (col: 3, row: 1)');
+    //             return loc;
+    //         case 3:
+    //             loc.push(' (col: 1, row: 2)');
+    //             return loc;
+    //
+    //         case 4:
+    //             loc.push(' (col: 2, row: 2)');
+    //             return loc;
+    //         case 5:
+    //             loc.push(' (col: 3, row: 2)');
+    //             return loc;
+    //         case 6:
+    //             loc.push(' (col: 1, row: 3)');
+    //             return loc;
+    //         case 7:
+    //             loc.push(' (col: 2, row: 3)');
+    //             return loc;
+    //         case 8:
+    //             loc.push(' (col: 3, row: 3)');
+    //             return loc;
+    //         default:
+    //             return '';
+    //     }
+    // }
 
     render() {
         const history = this.state.history;
@@ -94,19 +138,56 @@ class Game extends React.Component {
             //     'Go to game start';
             
             let desc;
+            let pos;
             if(move){
-                desc = 'Go to move #' + move;
+                const selectedPos = this.state.history[move].selectedPos;
+
+                switch (selectedPos){
+
+                    case 0:
+                        pos = ' - (1, 1)';
+                        break;
+                    case 1:
+                        pos = ' - (2, 1)';
+                        break;
+                    case 2:
+                        pos = ' - (3, 1)';
+                        break;
+                    case 3:
+                        pos = ' - (1, 2)';
+                        break;
+                    case 4:
+                        pos = ' - (2, 2)';
+                        break;
+                    case 5:
+                        pos = ' - (3, 2)';
+                        break;
+                    case 6:
+                        pos = ' - (1, 3)';
+                        break;
+                    case 7:
+                        pos = ' - (2, 3)';
+                        break;
+                    case 8:
+                        pos = ' - (3, 3)';
+                        break;
+                    default:
+                        break;
+                }
+
+                desc = 'Go to move #' + move + pos;
 
                 return (
-                    <li key={move} className="game-history">
-                        <button onClick={() => this.jumpTo(move)}>{desc}</button>
-                    </li>
+                    <p key={move} className="game-history">
+                        <button className="btn-style" onClick={() => this.jumpTo(move)}>{desc}</button>
+                    </p>
                 );
+
             }else{
                 desc = 'Reset The Game';
                 return (
                     <p key={move}>
-                        <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                        <button className="btn-style" onClick={() => this.jumpTo(move)}>{desc}</button>
                     </p>
                 );
             }
@@ -128,14 +209,15 @@ class Game extends React.Component {
         return (
             <div className="game">
                 <div className="game-board">
+                    <div className="status-info">{status}</div>
                     <Board
                         squares={current.squares}
                         onClick={(i) => this.handleClick(i)}
                     />
                 </div>
                 <div className="game-info">
-                    <div className="status-info">{status}</div>
-                    <ol>{moves}</ol>
+                    <p className="status-title"> Game Status</p>
+                    <div>{moves}</div>
                 </div>
             </div>
         );
